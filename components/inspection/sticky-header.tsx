@@ -30,7 +30,7 @@ export function StickyHeader({
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
-      <div className="flex items-center justify-between p-4">
+      <div className="flex items-center justify-between p-4 max-w-lg mx-auto">
         {/* Back Button */}
         <Button
           variant="ghost"
@@ -84,7 +84,7 @@ export function StickyHeader({
         />
       </div>
       {hasCriticalFail && (
-        <div className="px-4 py-1 bg-fail/15 text-fail text-xs font-semibold text-center">
+        <div className="px-4 py-1 bg-fail/15 text-fail text-xs font-semibold text-center max-w-lg mx-auto">
           {statusLabel}
         </div>
       )}

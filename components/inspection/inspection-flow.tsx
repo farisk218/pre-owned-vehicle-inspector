@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { StickyHeader } from './sticky-header'
 import { InspectionCard } from './inspection-card'
 import { StepNavigation } from './step-navigation'
@@ -24,6 +24,7 @@ interface InspectionFlowProps {
 }
 
 export function InspectionFlow({ initialMode, schema, onExit }: InspectionFlowProps) {
+  const contentRef = useRef<HTMLDivElement>(null)
   const [mode, setMode] = useState<InspectionMode>(initialMode)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [answers, setAnswers] = useState<InspectionAnswers>({})
@@ -66,7 +67,12 @@ export function InspectionFlow({ initialMode, schema, onExit }: InspectionFlowPr
   }, [currentStepIndex, steps.length])
 
   useEffect(() => {
-    window.scrollTo({ top: 0 })
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'auto' })
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+      contentRef.current?.scrollTo({ top: 0, behavior: 'auto' })
+    })
   }, [currentStepIndex])
 
   const handleModeChange = useCallback((newMode: InspectionMode) => {
@@ -118,7 +124,7 @@ export function InspectionFlow({ initialMode, schema, onExit }: InspectionFlowPr
   if (!currentStep) return null
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div ref={contentRef} className="min-h-screen flex flex-col overflow-x-hidden">
       <StickyHeader
         currentStep={currentStep}
         currentStepIndex={currentStepIndex}
@@ -132,11 +138,13 @@ export function InspectionFlow({ initialMode, schema, onExit }: InspectionFlowPr
 
       {/* Mode Toggle */}
       <div className="p-4 pb-0">
-        <ModeToggle mode={mode} onModeChange={handleModeChange} />
+        <div className="max-w-lg mx-auto">
+          <ModeToggle mode={mode} onModeChange={handleModeChange} />
+        </div>
       </div>
 
       {/* Inspection Cards */}
-      <div className="flex-1 p-4 space-y-4 pb-24">
+      <div className="flex-1 p-4 space-y-4 pb-24 max-w-lg mx-auto w-full">
         {currentStep.sections.map((section) => (
           <div key={section.id} className="space-y-2">
             <h3 className="text-sm text-muted-foreground font-medium">{section.label}</h3>

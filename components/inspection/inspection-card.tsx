@@ -128,7 +128,7 @@ export function InspectionCard({ question, answer, onUpdate }: InspectionCardPro
         </div>
 
         {question.type === 'status' && (
-          <div className="flex gap-3 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
             <Button
               variant="outline"
               size="lg"
@@ -175,7 +175,7 @@ export function InspectionCard({ question, answer, onUpdate }: InspectionCardPro
         )}
 
         {question.type === 'boolean' && (
-          <div className="flex gap-3 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             <Button
               variant={answer?.booleanValue === true ? 'default' : 'outline'}
               size="lg"
@@ -196,7 +196,7 @@ export function InspectionCard({ question, answer, onUpdate }: InspectionCardPro
         )}
 
         {question.type === 'rating' && (
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
             {Array.from({ length: question.maxRating ?? 5 }).map((_, idx) => {
               const value = idx + 1
               return (
