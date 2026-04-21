@@ -11,7 +11,7 @@
       "helperText": "Known Ertiga weak spot; inspect inner lip and quarter seam carefully.",
       "weight": 8,
       "critical": true,
-      "cost": 1500
+      "cost": { "minor": 900, "medium": 1500, "severe": 3200 }
     },
     "clutch_wear": {
       "helperText": "City-use Ertigas frequently show clutch wear. Check slip in 3rd gear pull.",
@@ -32,7 +32,7 @@
         "type": "status",
         "weight": 10,
         "critical": true,
-        "cost": 4500
+        "cost": { "minor": 1800, "medium": 4500, "severe": 7000 }
       }
     },
     {
@@ -45,7 +45,7 @@
         "type": "status",
         "weight": 8,
         "critical": false,
-        "cost": 2500
+        "cost": { "minor": 1200, "medium": 2500, "severe": 4200 }
       }
     },
     {
@@ -58,7 +58,7 @@
         "type": "status",
         "weight": 7,
         "critical": false,
-        "cost": 1800
+        "cost": { "minor": 900, "medium": 1800, "severe": 3200 }
       }
     },
     {
@@ -71,7 +71,7 @@
         "type": "status",
         "weight": 6,
         "critical": false,
-        "cost": 1200
+        "cost": { "minor": 600, "medium": 1200, "severe": 2400 }
       }
     },
     {
@@ -84,7 +84,7 @@
         "type": "status",
         "weight": 6,
         "critical": false,
-        "cost": 2200
+        "cost": { "minor": 1200, "medium": 2200, "severe": 3500 }
       }
     },
     {

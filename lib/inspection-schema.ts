@@ -15,7 +15,7 @@ export interface InspectionQuestion {
   type: InspectionQuestionType
   weight: number
   critical: boolean
-  cost?: number
+  cost?: number | { minor?: number; medium?: number; severe?: number }
   mode?: InspectionMode
   minRating?: number
   maxRating?: number

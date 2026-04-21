@@ -7,6 +7,33 @@ const RULE_COST_ADJUSTMENTS: Record<string, number> = {
   injector_egr_attention: 800,
 }
 
+type SeverityTier = 'minor' | 'medium' | 'severe'
+
+function resolveSeverityTier(answer: InspectionAnswers[string]): SeverityTier | null {
+  if (!answer) return null
+
+  if (answer.status === 'fail') return 'severe'
+  if (answer.status === 'warning') return 'medium'
+  if (answer.booleanValue === false) return 'severe'
+  if (typeof answer.ratingValue === 'number') {
+    if (answer.ratingValue <= 1) return 'severe'
+    if (answer.ratingValue <= 3) return 'medium'
+    return null
+  }
+  return null
+}
+
+function resolveQuestionCost(
+  cost: InspectionStep['sections'][number]['questions'][number]['cost'],
+  tier: SeverityTier
+): number {
+  if (!cost) return 0
+  if (typeof cost === 'number') return tier === 'severe' ? cost : Math.round(cost * (tier === 'medium' ? 0.6 : 0.3))
+  if (tier === 'severe') return cost.severe ?? cost.medium ?? cost.minor ?? 0
+  if (tier === 'medium') return cost.medium ?? cost.minor ?? 0
+  return cost.minor ?? 0
+}
+
 export function estimateRepairCost(
   steps: InspectionStep[],
   answers: InspectionAnswers,
@@ -18,9 +45,9 @@ export function estimateRepairCost(
     if (step.id === 'final') continue
     for (const question of getQuestions(step)) {
       const answer = answers[question.id]
-      const hasFailure = answer?.status === 'fail' || answer?.booleanValue === false
-      if (hasFailure) {
-        total += question.cost || 0
+      const severity = resolveSeverityTier(answer)
+      if (severity) {
+        total += resolveQuestionCost(question.cost, severity)
       }
     }
   }

@@ -95,7 +95,7 @@
               "type": "status",
               "weight": 5,
               "critical": false,
-              "cost": 1200
+              "cost": { "minor": 500, "medium": 1200, "severe": 2200 }
             },
             {
               "id": "tyre_age",
@@ -109,7 +109,7 @@
               ],
               "weight": 4,
               "critical": false,
-              "cost": 1600
+              "cost": { "minor": 800, "medium": 1600, "severe": 2800 }
             },
             {
               "id": "all_lights_working",
@@ -156,7 +156,7 @@
               ],
               "weight": 5,
               "critical": false,
-              "cost": 2500
+              "cost": { "minor": 1000, "medium": 2500, "severe": 4500 }
             },
             {
               "id": "dashboard_warning_lights",
@@ -195,7 +195,7 @@
               "type": "status",
               "weight": 7,
               "critical": false,
-              "cost": 2000
+              "cost": { "minor": 900, "medium": 2000, "severe": 3200 }
             },
             {
               "id": "brake_performance",
@@ -204,7 +204,7 @@
               "type": "status",
               "weight": 7,
               "critical": true,
-              "cost": 3000
+              "cost": { "minor": 1200, "medium": 3000, "severe": 5000 }
             },
             {
               "id": "drive_notes",
@@ -236,7 +236,7 @@
               "type": "status",
               "weight": 7,
               "critical": true,
-              "cost": 2500
+              "cost": { "minor": 1000, "medium": 2500, "severe": 4000 }
             },
             {
               "id": "coolant_health",
@@ -245,7 +245,7 @@
               "type": "status",
               "weight": 5,
               "critical": false,
-              "cost": 1200
+              "cost": { "minor": 600, "medium": 1200, "severe": 2200 }
             },
             {
               "id": "engine_bay_photo",

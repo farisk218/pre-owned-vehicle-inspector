@@ -45,6 +45,17 @@ export interface VehicleOption {
   enabled: boolean
 }
 
+export interface MakeOption {
+  make: string
+}
+
+export interface ModelOption {
+  id: string
+  model: string
+  years: [number, number]
+  enabled: boolean
+}
+
 const overrideMap: Record<string, VehicleOverride> = {
   'ertiga-2013.json': ertigaOverrideData as VehicleOverride,
 }
@@ -63,6 +74,26 @@ export function listVehicleOptions(): VehicleOption[] {
       enabled: generation.enabled,
     }))
   )
+}
+
+export function listMakeOptions(): MakeOption[] {
+  const registry = carsData as CarsRegistry
+  const makes = Array.from(new Set(registry.cars.map((car) => car.make)))
+  return makes.map((make) => ({ make }))
+}
+
+export function listModelOptions(make: string): ModelOption[] {
+  const registry = carsData as CarsRegistry
+  return registry.cars
+    .filter((car) => car.make === make)
+    .flatMap((car) =>
+      car.generations.map((generation) => ({
+        id: car.id,
+        model: car.model,
+        years: generation.yearRange,
+        enabled: generation.enabled,
+      }))
+    )
 }
 
 export function resolveVehicleGeneration(selection: VehicleSelection): {

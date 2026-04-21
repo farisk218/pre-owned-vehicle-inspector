@@ -1,20 +1,27 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Car, Wrench, Clock, CheckCircle2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { InspectionMode } from '@/lib/inspection-schema'
-import { listVehicleOptions, VehicleSelection } from '@/lib/schema-loader'
+import { listMakeOptions, listModelOptions, VehicleSelection } from '@/lib/schema-loader'
 
 interface HomeScreenProps {
   onStartInspection: (mode: InspectionMode, selection: VehicleSelection) => void
 }
 
 export function HomeScreen({ onStartInspection }: HomeScreenProps) {
-  const options = useMemo(() => listVehicleOptions(), [])
-  const [carId, setCarId] = useState(options[0]?.id ?? 'ertiga')
+  const makeOptions = useMemo(() => listMakeOptions(), [])
+  const [make, setMake] = useState(makeOptions[0]?.make ?? 'Maruti Suzuki')
+  const modelOptions = useMemo(() => listModelOptions(make), [make])
+  const [carId, setCarId] = useState(modelOptions[0]?.id ?? 'ertiga')
   const [year, setYear] = useState(2013)
-  const selectedOption = options.find((item) => item.id === carId)
+  useEffect(() => {
+    if (!modelOptions.some((item) => item.id === carId)) {
+      setCarId(modelOptions[0]?.id ?? '')
+    }
+  }, [modelOptions, carId])
+  const selectedOption = modelOptions.find((item) => item.id === carId)
   const yearSupported = selectedOption ? year >= selectedOption.years[0] && year <= selectedOption.years[1] : false
   const canStart = Boolean(selectedOption?.enabled && yearSupported)
 
@@ -36,15 +43,34 @@ export function HomeScreen({ onStartInspection }: HomeScreenProps) {
       <Card className="w-full max-w-md border-border bg-card">
         <CardContent className="p-5 space-y-4">
           <div>
-            <label className="text-sm text-muted-foreground">Select Vehicle</label>
+            <label className="text-sm text-muted-foreground">Make</label>
+            <select
+              value={make}
+              onChange={(event) => {
+                const newMake = event.target.value
+                setMake(newMake)
+                const nextModels = listModelOptions(newMake)
+                setCarId(nextModels[0]?.id ?? '')
+              }}
+              className="w-full mt-1 h-11 rounded-md border border-border bg-input px-3 text-sm"
+            >
+              {makeOptions.map((option) => (
+                <option key={option.make} value={option.make}>
+                  {option.make}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Model</label>
             <select
               value={carId}
               onChange={(event) => setCarId(event.target.value)}
               className="w-full mt-1 h-11 rounded-md border border-border bg-input px-3 text-sm"
             >
-              {options.map((option) => (
+              {modelOptions.map((option) => (
                 <option key={option.id} value={option.id}>
-                  {option.label}
+                  {option.model} ({option.years[0]}-{option.years[1]})
                 </option>
               ))}
             </select>

@@ -14,6 +14,21 @@
           "fuelTypes": ["diesel", "petrol"]
         }
       ]
+    },
+    {
+      "id": "innova",
+      "make": "Toyota",
+      "model": "Innova",
+      "generations": [
+        {
+          "id": "gen2",
+          "yearRange": [2016, 2021],
+          "enabled": false,
+          "schema": "innova-2018.json",
+          "variants": ["GX", "VX"],
+          "fuelTypes": ["diesel", "petrol"]
+        }
+      ]
     }
   ]
 }
