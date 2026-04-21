@@ -1,0 +1,270 @@
+{
+  "steps": [
+    {
+      "id": "basic-info",
+      "label": "Basic Info",
+      "icon": "📋",
+      "helperText": "Verify legal ownership and basic history before physical inspection.",
+      "sections": [
+        {
+          "id": "docs",
+          "label": "Documents",
+          "questions": [
+            {
+              "id": "vin_match",
+              "label": "VIN/chassis matches registration",
+              "helperText": "Compare VIN plate, windshield VIN, and registration book.",
+              "type": "status",
+              "weight": 8,
+              "critical": true
+            },
+            {
+              "id": "odometer_reading",
+              "label": "Current odometer reading (km)",
+              "helperText": "Enter dashboard reading.",
+              "type": "text",
+              "weight": 1,
+              "critical": false
+            },
+            {
+              "id": "odometer_consistency",
+              "label": "Odometer appears consistent with wear",
+              "helperText": "Check pedal/steering wear and service records.",
+              "type": "boolean",
+              "weight": 7,
+              "critical": true
+            },
+            {
+              "id": "service_history",
+              "label": "Service records available",
+              "helperText": "Stamped booklet or verified invoices.",
+              "type": "status",
+              "weight": 5,
+              "critical": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exterior",
+      "label": "Exterior",
+      "icon": "🚗",
+      "helperText": "Inspect paint, structure, glass, lights, and tyre condition.",
+      "sections": [
+        {
+          "id": "body",
+          "label": "Body & Paint",
+          "questions": [
+            {
+              "id": "panel_gaps",
+              "label": "Panel alignment and gap consistency",
+              "helperText": "Uneven gaps can indicate repaired collision damage.",
+              "type": "rating",
+              "minRating": 1,
+              "maxRating": 5,
+              "weight": 6,
+              "critical": false
+            },
+            {
+              "id": "paint_match",
+              "label": "Paint shade matches across panels",
+              "helperText": "Check in natural light for repaint mismatch.",
+              "type": "status",
+              "weight": 4,
+              "critical": false
+            },
+            {
+              "id": "rust",
+              "label": "No visible rust on body/arches",
+              "helperText": "Focus on wheel arches, rocker panels, and boot floor.",
+              "type": "status",
+              "weight": 5,
+              "critical": false
+            }
+          ]
+        },
+        {
+          "id": "wheels-lights",
+          "label": "Wheels, Tyres & Lights",
+          "questions": [
+            {
+              "id": "tyre_wear_pattern",
+              "label": "Tyre wear is even",
+              "helperText": "Uneven wear suggests alignment/suspension issues.",
+              "type": "status",
+              "weight": 5,
+              "critical": false,
+              "cost": 1200
+            },
+            {
+              "id": "tyre_age",
+              "label": "Tyre age condition",
+              "helperText": "Pick best match to sidewall date and cracking.",
+              "type": "select",
+              "options": [
+                { "label": "Fresh (<3 years)", "value": "fresh", "score": 1 },
+                { "label": "Aging (3-5 years)", "value": "aging", "score": 0.5 },
+                { "label": "Old/cracked (>5 years)", "value": "old", "score": 0 }
+              ],
+              "weight": 4,
+              "critical": false,
+              "cost": 1600
+            },
+            {
+              "id": "all_lights_working",
+              "label": "All exterior lights functioning",
+              "helperText": "Check headlights, tail lamps, indicators, reverse lamps.",
+              "type": "boolean",
+              "weight": 4,
+              "critical": false,
+              "cost": 500
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interior",
+      "label": "Interior",
+      "icon": "🪑",
+      "helperText": "Assess cabin functionality, AC, warning lamps, and safety equipment.",
+      "sections": [
+        {
+          "id": "cabin",
+          "label": "Cabin Health",
+          "questions": [
+            {
+              "id": "seat_condition",
+              "label": "Seat and trim condition",
+              "helperText": "Look for tears, sagging foam, and water stains.",
+              "type": "rating",
+              "minRating": 1,
+              "maxRating": 5,
+              "weight": 3,
+              "critical": false
+            },
+            {
+              "id": "ac_performance",
+              "label": "AC cooling performance",
+              "helperText": "Observe cooling speed and vent consistency.",
+              "type": "select",
+              "options": [
+                { "label": "Strong", "value": "strong", "score": 1 },
+                { "label": "Average", "value": "average", "score": 0.5 },
+                { "label": "Weak", "value": "weak", "score": 0 }
+              ],
+              "weight": 5,
+              "critical": false,
+              "cost": 2500
+            },
+            {
+              "id": "dashboard_warning_lights",
+              "label": "No persistent warning lights",
+              "helperText": "Engine/ABS/Airbag lights must not stay on after ignition.",
+              "type": "status",
+              "weight": 8,
+              "critical": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "test-drive",
+      "label": "Test Drive",
+      "icon": "🛣️",
+      "helperText": "Test real drivability: clutch, braking, steering, and vibrations.",
+      "sections": [
+        {
+          "id": "driving",
+          "label": "Drive Feel",
+          "questions": [
+            {
+              "id": "engine_start_idle",
+              "label": "Engine starts and idles smoothly",
+              "helperText": "No rough idle, smoke burst, or long crank.",
+              "type": "status",
+              "weight": 6,
+              "critical": true
+            },
+            {
+              "id": "clutch_wear",
+              "label": "Clutch engagement is healthy",
+              "helperText": "Check bite point, slip under acceleration, and pedal effort.",
+              "type": "status",
+              "weight": 7,
+              "critical": false,
+              "cost": 2000
+            },
+            {
+              "id": "brake_performance",
+              "label": "Braking is stable and confident",
+              "helperText": "No pulling, pulsation, or grinding sounds.",
+              "type": "status",
+              "weight": 7,
+              "critical": true,
+              "cost": 3000
+            },
+            {
+              "id": "drive_notes",
+              "label": "Test drive observations",
+              "helperText": "Add notes about noise, pull, vibration, or smoke.",
+              "type": "text",
+              "weight": 1,
+              "critical": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "engine",
+      "label": "Engine",
+      "icon": "⚙️",
+      "helperText": "Advanced checks for fluid leaks, smoke behavior, and mount condition.",
+      "mode": "pro",
+      "sections": [
+        {
+          "id": "engine-general",
+          "label": "Engine Bay",
+          "questions": [
+            {
+              "id": "oil_leak_signs",
+              "label": "No major oil leak signs",
+              "helperText": "Inspect sump area, valve cover, and underside.",
+              "type": "status",
+              "weight": 7,
+              "critical": true,
+              "cost": 2500
+            },
+            {
+              "id": "coolant_health",
+              "label": "Coolant color and level are acceptable",
+              "helperText": "Avoid rusty or sludgy coolant signs.",
+              "type": "status",
+              "weight": 5,
+              "critical": false,
+              "cost": 1200
+            },
+            {
+              "id": "engine_bay_photo",
+              "label": "Capture clear engine bay photo",
+              "helperText": "Take one wide photo including turbo side and hoses.",
+              "type": "photo",
+              "weight": 1,
+              "critical": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "final",
+      "label": "Final Report",
+      "icon": "📊",
+      "helperText": "Review risk level, insights, and negotiation recommendation.",
+      "sections": []
+    }
+  ]
+}

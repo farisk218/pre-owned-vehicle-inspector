@@ -3,16 +3,21 @@
 import { useState } from 'react'
 import { HomeScreen } from '@/components/inspection/home-screen'
 import { InspectionFlow } from '@/components/inspection/inspection-flow'
-import { InspectionMode } from '@/lib/inspection-schema'
+import { InspectionMode, InspectionSchema } from '@/lib/inspection-schema'
+import { buildInspectionSchema, VehicleSelection } from '@/lib/schema-loader'
 
 type AppScreen = 'home' | 'inspection'
 
 export default function UsedCarInspector() {
   const [screen, setScreen] = useState<AppScreen>('home')
   const [inspectionMode, setInspectionMode] = useState<InspectionMode>('easy')
+  const [schema, setSchema] = useState<InspectionSchema | null>(null)
 
-  const handleStartInspection = (mode: InspectionMode) => {
+  const handleStartInspection = (mode: InspectionMode, selection: VehicleSelection) => {
+    const builtSchema = buildInspectionSchema(selection)
+    if (!builtSchema) return
     setInspectionMode(mode)
+    setSchema(builtSchema)
     setScreen('inspection')
   }
 
@@ -26,10 +31,13 @@ export default function UsedCarInspector() {
         <HomeScreen onStartInspection={handleStartInspection} />
       )}
       {screen === 'inspection' && (
-        <InspectionFlow 
-          initialMode={inspectionMode} 
-          onExit={handleExit} 
-        />
+        schema ? (
+          <InspectionFlow
+            initialMode={inspectionMode}
+            schema={schema}
+            onExit={handleExit}
+          />
+        ) : null
       )}
     </main>
   )

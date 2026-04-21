@@ -1,0 +1,19 @@
+{
+  "cars": [
+    {
+      "id": "ertiga",
+      "make": "Maruti Suzuki",
+      "model": "Ertiga",
+      "generations": [
+        {
+          "id": "gen1",
+          "yearRange": [2012, 2018],
+          "enabled": true,
+          "schema": "ertiga-2013.json",
+          "variants": ["VDi", "ZDi", "LDi"],
+          "fuelTypes": ["diesel", "petrol"]
+        }
+      ]
+    }
+  ]
+}

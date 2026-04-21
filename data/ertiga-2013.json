@@ -5,193 +5,99 @@
     "year": 2013,
     "engine": "1.3L DDiS"
   },
-  "steps": [
+  "overrides": {
+    "rust": {
+      "label": "No rust at rear wheel arches",
+      "helperText": "Known Ertiga weak spot; inspect inner lip and quarter seam carefully.",
+      "weight": 8,
+      "critical": true,
+      "cost": 1500
+    },
+    "clutch_wear": {
+      "helperText": "City-use Ertigas frequently show clutch wear. Check slip in 3rd gear pull.",
+      "weight": 8
+    },
+    "odometer_consistency": {
+      "helperText": "Confirm with service history and ECU scan if possible."
+    }
+  },
+  "additions": [
     {
-      "id": "basic-info",
-      "label": "Basic Info",
-      "icon": "📋",
-      "helperText": "Verify ownership and odometer consistency before checking body condition.",
-      "sections": [
-        {
-          "id": "docs",
-          "label": "Documents",
-          "questions": [
-            {
-              "id": "vin_match",
-              "label": "VIN matches all documents",
-              "helperText": "Compare VIN on windshield and door frame with RC records.",
-              "type": "status",
-              "weight": 8,
-              "critical": true
-            },
-            {
-              "id": "odometer_consistency",
-              "label": "Odometer reading appears genuine",
-              "helperText": "Cross-check with service history and wear on pedals.",
-              "type": "boolean",
-              "weight": 7,
-              "critical": true
-            }
-          ]
-        }
-      ]
+      "stepId": "engine",
+      "sectionId": "engine-general",
+      "question": {
+        "id": "timing_chain_noise",
+        "label": "No timing chain noise on cold start",
+        "helperText": "Rattle from timing side in first minute can indicate wear.",
+        "type": "status",
+        "weight": 10,
+        "critical": true,
+        "cost": 4500
+      }
     },
     {
-      "id": "exterior",
-      "label": "Exterior",
-      "icon": "🚗",
-      "helperText": "Walk around the car in daylight and inspect every panel and wheel arch.",
-      "sections": [
-        {
-          "id": "body",
-          "label": "Body",
-          "questions": [
-            {
-              "id": "panel_gaps",
-              "label": "Panel gaps are even",
-              "helperText": "Uneven gaps can indicate major body repairs.",
-              "type": "rating",
-              "minRating": 1,
-              "maxRating": 5,
-              "weight": 5,
-              "critical": false
-            },
-            {
-              "id": "rust",
-              "label": "No rust at rear wheel arches",
-              "helperText": "Known Ertiga weak spot; rust here is expensive to fix.",
-              "type": "status",
-              "weight": 8,
-              "critical": true,
-              "cost": 1500
-            }
-          ]
-        }
-      ]
+      "stepId": "engine",
+      "sectionId": "engine-general",
+      "question": {
+        "id": "turbo_oil_seepage",
+        "label": "Turbo area free from oil seepage",
+        "helperText": "Inspect compressor outlet and hose clamps for oil wetness.",
+        "type": "status",
+        "weight": 8,
+        "critical": false,
+        "cost": 2500
+      }
     },
     {
-      "id": "interior",
-      "label": "Interior",
-      "icon": "🪑",
-      "helperText": "Check comfort and electronics; cabin condition reflects owner care.",
-      "sections": [
-        {
-          "id": "cabin",
-          "label": "Cabin",
-          "questions": [
-            {
-              "id": "ac_performance",
-              "label": "AC cools quickly and evenly",
-              "helperText": "Test at idle and while driving.",
-              "type": "select",
-              "options": [
-                { "label": "Strong cooling", "value": "strong", "score": 1 },
-                { "label": "Average cooling", "value": "average", "score": 0.5 },
-                { "label": "Weak/no cooling", "value": "weak", "score": 0 }
-              ],
-              "weight": 5,
-              "critical": false
-            }
-          ]
-        }
-      ]
+      "stepId": "engine",
+      "sectionId": "engine-general",
+      "question": {
+        "id": "egr_injector_behavior",
+        "label": "No EGR/injector hesitation under load",
+        "helperText": "Watch for jerks, smoke spikes, and hesitation at low RPM pull.",
+        "type": "status",
+        "weight": 7,
+        "critical": false,
+        "cost": 1800
+      }
     },
     {
-      "id": "test-drive",
-      "label": "Test Drive",
-      "icon": "🛣️",
-      "helperText": "Drive in traffic and open road to assess clutch, brakes, and drivability.",
-      "sections": [
-        {
-          "id": "driving",
-          "label": "Driving Feel",
-          "questions": [
-            {
-              "id": "clutch_wear",
-              "label": "Clutch bite and travel feel healthy",
-              "helperText": "City cars commonly show clutch wear around this age.",
-              "type": "status",
-              "weight": 7,
-              "critical": false,
-              "cost": 2000
-            },
-            {
-              "id": "drive_notes",
-              "label": "Test drive observations",
-              "helperText": "Capture any vibration, pull, noise, or smoke details.",
-              "type": "text",
-              "weight": 1,
-              "critical": false
-            }
-          ]
-        }
-      ]
+      "stepId": "engine",
+      "sectionId": "engine-general",
+      "question": {
+        "id": "engine_mount_vibration",
+        "label": "Engine mount vibration within normal level",
+        "helperText": "Excess vibration in cabin at idle points to worn mounts.",
+        "type": "status",
+        "weight": 6,
+        "critical": false,
+        "cost": 1200
+      }
     },
     {
-      "id": "engine",
-      "label": "Engine",
-      "icon": "⚙️",
-      "helperText": "Listen carefully at idle and rev range for known DDiS problems.",
-      "mode": "pro",
-      "sections": [
-        {
-          "id": "diesel-specific",
-          "label": "Diesel Specific",
-          "questions": [
-            {
-              "id": "timing_chain_noise",
-              "label": "No timing chain noise on cold start",
-              "helperText": "Rattling from timing side is a critical warning.",
-              "type": "status",
-              "weight": 10,
-              "critical": true,
-              "cost": 4500
-            },
-            {
-              "id": "turbo_oil_seepage",
-              "label": "Turbo area free from oil seepage",
-              "helperText": "Inspect hose joints and compressor side for wet oil traces.",
-              "type": "status",
-              "weight": 8,
-              "critical": false,
-              "cost": 2500
-            },
-            {
-              "id": "egr_injector_behavior",
-              "label": "No EGR/injector hesitation under acceleration",
-              "helperText": "Jerks or smoke spikes suggest fuel system servicing.",
-              "type": "status",
-              "weight": 7,
-              "critical": false,
-              "cost": 1800
-            },
-            {
-              "id": "engine_mount_vibration",
-              "label": "Engine mount vibration is within normal level",
-              "helperText": "Strong vibration in cabin at idle usually means worn mounts.",
-              "type": "status",
-              "weight": 6,
-              "critical": false,
-              "cost": 1200
-            },
-            {
-              "id": "engine_bay_photo",
-              "label": "Capture clear engine bay photo",
-              "helperText": "Take one wide photo covering turbo side and hoses.",
-              "type": "photo",
-              "weight": 1,
-              "critical": false
-            }
-          ]
-        }
-      ]
+      "stepId": "test-drive",
+      "sectionId": "driving",
+      "question": {
+        "id": "steering_rack_noise",
+        "label": "No steering rack or column knock",
+        "helperText": "Drive over rough patches with slight steering input and listen for knock.",
+        "type": "status",
+        "weight": 6,
+        "critical": false,
+        "cost": 2200
+      }
     },
     {
-      "id": "final",
-      "label": "Final Report",
-      "icon": "📊",
-      "helperText": "Review critical risks, total repair estimate, and negotiation price.",
-      "sections": []
+      "stepId": "exterior",
+      "sectionId": "body",
+      "question": {
+        "id": "rear_hatch_alignment",
+        "label": "Rear hatch alignment and closure feel normal",
+        "helperText": "Misalignment can indicate rear impact repair.",
+        "type": "status",
+        "weight": 5,
+        "critical": false
+      }
     }
   ]
 }

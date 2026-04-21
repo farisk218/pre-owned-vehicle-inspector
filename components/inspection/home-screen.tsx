@@ -1,15 +1,23 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { Car, Wrench, Clock, CheckCircle2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { InspectionMode } from '@/lib/inspection-schema'
+import { listVehicleOptions, VehicleSelection } from '@/lib/schema-loader'
 
 interface HomeScreenProps {
-  onStartInspection: (mode: InspectionMode) => void
+  onStartInspection: (mode: InspectionMode, selection: VehicleSelection) => void
 }
 
 export function HomeScreen({ onStartInspection }: HomeScreenProps) {
+  const options = useMemo(() => listVehicleOptions(), [])
+  const [carId, setCarId] = useState(options[0]?.id ?? 'ertiga')
+  const [year, setYear] = useState(2013)
+  const selectedOption = options.find((item) => item.id === carId)
+  const yearSupported = selectedOption ? year >= selectedOption.years[0] && year <= selectedOption.years[1] : false
+  const canStart = Boolean(selectedOption?.enabled && yearSupported)
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-8">
       {/* Logo & Title */}
@@ -21,15 +29,48 @@ export function HomeScreen({ onStartInspection }: HomeScreenProps) {
           Used Car Inspector
         </h1>
         <p className="text-muted-foreground text-lg">
-          2013 Maruti Suzuki Ertiga Diesel
+          Vehicle-aware inspection platform
         </p>
       </div>
+
+      <Card className="w-full max-w-md border-border bg-card">
+        <CardContent className="p-5 space-y-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Select Vehicle</label>
+            <select
+              value={carId}
+              onChange={(event) => setCarId(event.target.value)}
+              className="w-full mt-1 h-11 rounded-md border border-border bg-input px-3 text-sm"
+            >
+              {options.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Model Year</label>
+            <input
+              type="number"
+              value={year}
+              onChange={(event) => setYear(Number(event.target.value) || 0)}
+              className="w-full mt-1 h-11 rounded-md border border-border bg-input px-3 text-sm"
+            />
+          </div>
+          {!canStart && (
+            <p className="text-xs text-fail">
+              Inspection not supported for selected year. Choose a supported generation year.
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Mode Selection */}
       <div className="w-full max-w-md space-y-4">
         <Card 
-          className="border-2 border-primary/30 hover:border-primary transition-colors cursor-pointer active:scale-[0.98]"
-          onClick={() => onStartInspection('easy')}
+          className="border-2 border-primary/30 hover:border-primary transition-colors cursor-pointer active:scale-[0.98] disabled:opacity-50"
+          onClick={() => canStart && onStartInspection('easy', { carId, year })}
         >
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
@@ -53,8 +94,8 @@ export function HomeScreen({ onStartInspection }: HomeScreenProps) {
         </Card>
 
         <Card 
-          className="border-2 border-accent/30 hover:border-accent transition-colors cursor-pointer active:scale-[0.98]"
-          onClick={() => onStartInspection('pro')}
+          className="border-2 border-accent/30 hover:border-accent transition-colors cursor-pointer active:scale-[0.98] disabled:opacity-50"
+          onClick={() => canStart && onStartInspection('pro', { carId, year })}
         >
           <CardContent className="p-6">
             <div className="flex items-start gap-4">

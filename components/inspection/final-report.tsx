@@ -1,13 +1,14 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { AlertTriangle, XCircle, RotateCcw, Share2, IndianRupee, ShieldCheck } from 'lucide-react'
+import { AlertTriangle, XCircle, RotateCcw, Share2, IndianRupee, ShieldCheck, Brain } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { InspectionAnswers, InspectionSchema, InspectionStep, getQuestions } from '@/lib/inspection-schema'
 import { calculateScore, getScoreStatus } from '@/lib/scoring'
 import { calculateRecommendedOffer, estimateRepairCost } from '@/lib/pricing'
+import { deriveOdometer, evaluateRules } from '@/lib/rules'
 import { cn } from '@/lib/utils'
 
 interface FinalReportProps {
@@ -21,7 +22,23 @@ export function FinalReport({ schema, steps, answers, onRestart }: FinalReportPr
   const [askingPrice, setAskingPrice] = useState(450000)
   const { score, hasCriticalFail } = useMemo(() => calculateScore(steps, answers), [steps, answers])
   const { label, color } = getScoreStatus(score, hasCriticalFail)
-  const estimatedRepairCost = useMemo(() => estimateRepairCost(steps, answers), [steps, answers])
+  const triggeredRules = useMemo(
+    () =>
+      evaluateRules({
+        car: schema.car,
+        answers,
+        derived: {
+          odometer: deriveOdometer(answers),
+          score,
+          hasCriticalFail,
+        },
+      }),
+    [schema.car, answers, score, hasCriticalFail]
+  )
+  const estimatedRepairCost = useMemo(
+    () => estimateRepairCost(steps, answers, triggeredRules),
+    [steps, answers, triggeredRules]
+  )
   const recommendedPrice = calculateRecommendedOffer(askingPrice, estimatedRepairCost)
 
   const inspectionSteps = steps.filter(s => s.id !== 'final')
@@ -194,6 +211,45 @@ export function FinalReport({ schema, steps, answers, onRestart }: FinalReportPr
                 <div key={index} className="p-3 bg-pass/10 rounded-lg">
                   <p className="font-medium text-foreground">{question.label}</p>
                   <p className="text-sm text-muted-foreground">{step}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {triggeredRules.length > 0 && (
+          <Card className="border-primary/30 bg-primary/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Brain className="w-5 h-5 text-primary" />
+                Intelligent Insights ({triggeredRules.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {triggeredRules.map((rule) => (
+                <div
+                  key={rule.id}
+                  className={cn(
+                    'p-3 rounded-lg',
+                    rule.severity === 'critical'
+                      ? 'bg-fail/10 border border-fail/30'
+                      : rule.severity === 'warning'
+                        ? 'bg-warning/10 border border-warning/30'
+                        : 'bg-secondary'
+                  )}
+                >
+                  <p
+                    className={cn(
+                      'text-sm',
+                      rule.severity === 'critical'
+                        ? 'text-fail'
+                        : rule.severity === 'warning'
+                          ? 'text-warning'
+                          : 'text-foreground'
+                    )}
+                  >
+                    {rule.message}
+                  </p>
                 </div>
               ))}
             </CardContent>

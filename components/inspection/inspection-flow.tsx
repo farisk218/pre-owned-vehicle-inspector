@@ -6,7 +6,6 @@ import { InspectionCard } from './inspection-card'
 import { StepNavigation } from './step-navigation'
 import { FinalReport } from './final-report'
 import { ModeToggle } from './mode-toggle'
-import schemaData from '@/data/ertiga-2013.json'
 import {
   InspectionAnswers,
   InspectionAnswer,
@@ -20,11 +19,11 @@ import { calculateScore, getScoreStatus } from '@/lib/scoring'
 
 interface InspectionFlowProps {
   initialMode: InspectionMode
+  schema: InspectionSchema
   onExit: () => void
 }
 
-export function InspectionFlow({ initialMode, onExit }: InspectionFlowProps) {
-  const schema = schemaData as InspectionSchema
+export function InspectionFlow({ initialMode, schema, onExit }: InspectionFlowProps) {
   const [mode, setMode] = useState<InspectionMode>(initialMode)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [answers, setAnswers] = useState<InspectionAnswers>({})
