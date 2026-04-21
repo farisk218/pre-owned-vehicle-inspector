@@ -169,6 +169,13 @@ export function FinalReport({ schema, steps, answers, onRestart }: FinalReportPr
                   {answers[question.id]?.notes && (
                     <p className="text-sm text-fail mt-1">{answers[question.id]?.notes}</p>
                   )}
+                  {answers[question.id]?.photo && (
+                    <img
+                      src={answers[question.id]?.photo}
+                      alt={`${question.label} evidence`}
+                      className="mt-2 rounded-lg border border-border max-h-40 w-full object-cover"
+                    />
+                  )}
                 </div>
               ))}
             </CardContent>
@@ -191,6 +198,13 @@ export function FinalReport({ schema, steps, answers, onRestart }: FinalReportPr
                   <p className="text-sm text-muted-foreground">{step}</p>
                   {answers[question.id]?.notes && (
                     <p className="text-sm text-warning mt-1">{answers[question.id]?.notes}</p>
+                  )}
+                  {answers[question.id]?.photo && (
+                    <img
+                      src={answers[question.id]?.photo}
+                      alt={`${question.label} evidence`}
+                      className="mt-2 rounded-lg border border-border max-h-40 w-full object-cover"
+                    />
                   )}
                 </div>
               ))}

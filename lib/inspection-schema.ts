@@ -72,7 +72,11 @@ export function isQuestionAnswered(question: InspectionQuestion, answer?: Inspec
 
   switch (question.type) {
     case 'status':
-      return answer.status !== null && answer.status !== undefined
+      if (answer.status === null || answer.status === undefined) return false
+      if (answer.status === 'fail') {
+        return typeof answer.photo === 'string' && answer.photo.length > 0
+      }
+      return true
     case 'boolean':
       return typeof answer.booleanValue === 'boolean'
     case 'rating':

@@ -65,6 +65,10 @@ export function InspectionFlow({ initialMode, schema, onExit }: InspectionFlowPr
     }
   }, [currentStepIndex, steps.length])
 
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [currentStepIndex])
+
   const handleModeChange = useCallback((newMode: InspectionMode) => {
     setMode(newMode)
     setCurrentStepIndex(0)
