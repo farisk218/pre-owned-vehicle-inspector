@@ -146,9 +146,19 @@ export function HomeScreen({ onStartInspection }: HomeScreenProps) {
       </div>
 
       {/* Footer */}
-      <p className="text-sm text-muted-foreground text-center max-w-xs">
-        Tap a mode to begin your professional vehicle inspection
-      </p>
+      <div className="text-center space-y-2">
+        <p className="text-sm text-muted-foreground max-w-xs">
+          Tap a mode to begin your professional vehicle inspection
+        </p>
+        <a
+          href="https://farisdev.me"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
+          Built by Faris
+        </a>
+      </div>
     </div>
   )
 }
