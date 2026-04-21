@@ -63,6 +63,173 @@ export function FinalReport({ schema, steps, answers, onRestart }: FinalReportPr
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (score / 100) * circumference
 
+  const exportPdfReport = async () => {
+    const { jsPDF } = await import('jspdf/dist/jspdf.es.min.js')
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' })
+    const pageHeight = doc.internal.pageSize.getHeight()
+    const pageWidth = doc.internal.pageSize.getWidth()
+    const margin = 14
+    const contentWidth = pageWidth - margin * 2
+    let y = margin
+
+    const ensureSpace = (needed: number) => {
+      if (y + needed > pageHeight - margin) {
+        doc.addPage()
+        y = margin
+      }
+    }
+
+    const addLine = (text: string, size = 11, spacing = 6, color: [number, number, number] = [31, 41, 55]) => {
+      ensureSpace(spacing + 1)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(size)
+      doc.setTextColor(...color)
+      const lines = doc.splitTextToSize(text, contentWidth)
+      doc.text(lines, margin, y)
+      y += Math.max(spacing, lines.length * 5)
+    }
+
+    const drawSectionTitle = (title: string, tone: 'neutral' | 'danger' | 'warning' | 'success' | 'primary' = 'neutral') => {
+      const tones: Record<string, [number, number, number]> = {
+        neutral: [31, 41, 55],
+        danger: [185, 28, 28],
+        warning: [180, 83, 9],
+        success: [21, 128, 61],
+        primary: [30, 64, 175],
+      }
+      ensureSpace(10)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(...tones[tone])
+      doc.setFontSize(13)
+      doc.text(title, margin, y)
+      y += 6
+      doc.setDrawColor(226, 232, 240)
+      doc.line(margin, y, pageWidth - margin, y)
+      y += 4
+    }
+
+    const drawStatCard = (
+      x: number,
+      title: string,
+      value: string,
+      accent: [number, number, number],
+      style: 'default' | 'price' = 'default'
+    ) => {
+      doc.setFillColor(248, 250, 252)
+      doc.setDrawColor(226, 232, 240)
+      doc.roundedRect(x, y, 43, 20, 2, 2, 'FD')
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(9)
+      doc.setTextColor(100, 116, 139)
+      doc.text(title, x + 3, y + 6)
+      if (style === 'price') {
+        doc.setFont('times', 'bold')
+        doc.setFontSize(12)
+        doc.setTextColor(...accent)
+        doc.text(value, x + 3, y + 13.5)
+      } else {
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(12)
+        doc.setTextColor(...accent)
+        doc.text(value, x + 3, y + 14)
+      }
+    }
+
+    doc.setFillColor(15, 23, 42)
+    doc.rect(0, 0, pageWidth, 28, 'F')
+    doc.setFillColor(34, 197, 94)
+    doc.circle(margin + 4, 10, 3, 'F')
+    doc.setTextColor(15, 23, 42)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(8)
+    doc.text('UCI', margin + 1.4, 11.1)
+    doc.setTextColor(255, 255, 255)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(17)
+    doc.text('USED CAR INSPECTION REPORT', margin + 10, 12)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.text(`${schema.car.year} ${schema.car.make} ${schema.car.model} ${schema.car.engine || ''}`, margin + 10, 19)
+    doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, pageWidth - margin, 19, { align: 'right' })
+    y = 36
+
+    drawStatCard(margin, 'Health Score', `${score}/100`, hasCriticalFail ? [185, 28, 28] : [21, 128, 61])
+    drawStatCard(margin + 48, 'Report Status', label, hasCriticalFail ? [185, 28, 28] : [30, 64, 175])
+    drawStatCard(margin + 96, 'Recommended Offer', `₹${recommendedPrice.toLocaleString('en-IN')}`, [21, 128, 61], 'price')
+    y += 24
+
+    drawSectionTitle('Negotiation Summary', 'primary')
+    addLine(`Asking Price: ₹${askingPrice.toLocaleString('en-IN')}`, 11)
+    addLine(`Estimated Repair Cost: ₹${estimatedRepairCost.toLocaleString('en-IN')}`, 11)
+    addLine(`Recommended Offer Price: ₹${recommendedPrice.toLocaleString('en-IN')}`, 11)
+
+    drawSectionTitle(`Critical Issues (${criticalIssues.length})`, 'danger')
+    if (criticalIssues.length === 0) {
+      addLine('No critical issues identified.', 11, 6, [71, 85, 105])
+    } else {
+      criticalIssues.forEach(({ step, question }, index) => {
+        ensureSpace(14)
+        doc.setFillColor(254, 242, 242)
+        doc.setDrawColor(254, 202, 202)
+        doc.roundedRect(margin, y - 4, contentWidth, 10, 2, 2, 'FD')
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(127, 29, 29)
+        doc.setFontSize(11)
+        doc.text(`${index + 1}. ${question.label}`, margin + 2, y + 2)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(100, 116, 139)
+        doc.setFontSize(9)
+        doc.text(step, pageWidth - margin - 2, y + 2, { align: 'right' })
+        y += 9
+        const notes = answers[question.id]?.notes
+        if (notes) addLine(`Notes: ${notes}`, 10, 5, [71, 85, 105])
+        const photo = answers[question.id]?.photo
+        if (photo) {
+          ensureSpace(48)
+          try {
+            doc.addImage(photo, 'JPEG', margin, y, 58, 40)
+            y += 42
+          } catch {
+            addLine('Photo attached (preview unavailable in PDF export).', 9, 5, [100, 116, 139])
+          }
+        }
+        y += 2
+      })
+    }
+
+    drawSectionTitle(`Minor Issues (${minorIssues.length})`, 'warning')
+    if (minorIssues.length === 0) {
+      addLine('No minor issues logged.', 11, 6, [71, 85, 105])
+    } else {
+      minorIssues.forEach(({ step, question }, index) => {
+        addLine(`${index + 1}. ${question.label} (${step})`, 11, 6, [120, 53, 15])
+      })
+    }
+
+    drawSectionTitle(`Intelligent Insights (${triggeredRules.length})`, 'primary')
+    if (triggeredRules.length === 0) {
+      addLine('No additional advisory insights generated.', 11, 6, [71, 85, 105])
+    } else {
+      triggeredRules.forEach((rule, index) => {
+        const tone = rule.severity === 'critical' ? [153, 27, 27] : rule.severity === 'warning' ? [146, 64, 14] : [30, 64, 175]
+        addLine(`${index + 1}. ${rule.message}`, 11, 6, tone as [number, number, number])
+      })
+    }
+
+    drawSectionTitle(`Strengths (${strengths.length})`, 'success')
+    strengths.slice(0, 10).forEach(({ step, question }, index) => {
+      addLine(`${index + 1}. ${question.label} (${step})`, 11, 6, [21, 128, 61])
+    })
+
+    const stamp = new Date().toISOString().slice(0, 10)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    doc.setTextColor(148, 163, 184)
+    doc.text('Generated by Used Car Inspector', margin, pageHeight - 6)
+    doc.text('Vehicle-aware inspection platform', pageWidth - margin, pageHeight - 6, { align: 'right' })
+    doc.save(`inspection-report-${schema.car.model.toLowerCase()}-${stamp}.pdf`)
+  }
+
   return (
     <div className="min-h-screen pb-8">
       {/* Header */}
@@ -301,9 +468,12 @@ export function FinalReport({ schema, steps, answers, onRestart }: FinalReportPr
           <Button
             size="lg"
             className="flex-1 h-14 bg-primary text-primary-foreground"
+            onClick={() => {
+              void exportPdfReport()
+            }}
           >
             <Share2 className="w-5 h-5 mr-2" />
-            Share Report
+            Export PDF
           </Button>
         </div>
       </div>
