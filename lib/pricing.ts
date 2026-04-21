@@ -6,7 +6,9 @@ export function estimateRepairCost(steps: InspectionStep[], answers: InspectionA
   for (const step of steps) {
     if (step.id === 'final') continue
     for (const question of getQuestions(step)) {
-      if (answers[question.id]?.status === 'fail') {
+      const answer = answers[question.id]
+      const hasFailure = answer?.status === 'fail' || answer?.booleanValue === false
+      if (hasFailure) {
         total += question.cost || 0
       }
     }

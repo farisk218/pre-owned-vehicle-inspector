@@ -28,7 +28,7 @@
               "id": "odometer_consistency",
               "label": "Odometer reading appears genuine",
               "helperText": "Cross-check with service history and wear on pedals.",
-              "type": "status",
+              "type": "boolean",
               "weight": 7,
               "critical": true
             }
@@ -50,7 +50,9 @@
               "id": "panel_gaps",
               "label": "Panel gaps are even",
               "helperText": "Uneven gaps can indicate major body repairs.",
-              "type": "status",
+              "type": "rating",
+              "minRating": 1,
+              "maxRating": 5,
               "weight": 5,
               "critical": false
             },
@@ -81,7 +83,12 @@
               "id": "ac_performance",
               "label": "AC cools quickly and evenly",
               "helperText": "Test at idle and while driving.",
-              "type": "status",
+              "type": "select",
+              "options": [
+                { "label": "Strong cooling", "value": "strong", "score": 1 },
+                { "label": "Average cooling", "value": "average", "score": 0.5 },
+                { "label": "Weak/no cooling", "value": "weak", "score": 0 }
+              ],
               "weight": 5,
               "critical": false
             }
@@ -107,6 +114,14 @@
               "weight": 7,
               "critical": false,
               "cost": 2000
+            },
+            {
+              "id": "drive_notes",
+              "label": "Test drive observations",
+              "helperText": "Capture any vibration, pull, noise, or smoke details.",
+              "type": "text",
+              "weight": 1,
+              "critical": false
             }
           ]
         }
@@ -158,6 +173,14 @@
               "weight": 6,
               "critical": false,
               "cost": 1200
+            },
+            {
+              "id": "engine_bay_photo",
+              "label": "Capture clear engine bay photo",
+              "helperText": "Take one wide photo covering turbo side and hoses.",
+              "type": "photo",
+              "weight": 1,
+              "critical": false
             }
           ]
         }

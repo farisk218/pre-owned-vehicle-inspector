@@ -1,15 +1,25 @@
 export type InspectionMode = 'easy' | 'pro'
 export type InspectionStatus = 'pass' | 'warning' | 'fail' | null
+export type InspectionQuestionType = 'status' | 'boolean' | 'rating' | 'select' | 'text' | 'photo'
+
+export interface SelectOption {
+  label: string
+  value: string
+  score?: number
+}
 
 export interface InspectionQuestion {
   id: string
   label: string
   helperText: string
-  type: 'status'
+  type: InspectionQuestionType
   weight: number
   critical: boolean
   cost?: number
   mode?: InspectionMode
+  minRating?: number
+  maxRating?: number
+  options?: SelectOption[]
 }
 
 export interface InspectionSection {
@@ -38,9 +48,13 @@ export interface InspectionSchema {
 }
 
 export interface InspectionAnswer {
-  status: InspectionStatus
-  notes?: string
+  status?: InspectionStatus
+  booleanValue?: boolean
+  ratingValue?: number
+  selectValue?: string
+  textValue?: string
   photo?: string
+  notes?: string
 }
 
 export type InspectionAnswers = Record<string, InspectionAnswer>
@@ -51,4 +65,25 @@ export function getStepsByMode(schema: InspectionSchema, mode: InspectionMode): 
 
 export function getQuestions(step: InspectionStep): InspectionQuestion[] {
   return step.sections.flatMap((section) => section.questions)
+}
+
+export function isQuestionAnswered(question: InspectionQuestion, answer?: InspectionAnswer): boolean {
+  if (!answer) return false
+
+  switch (question.type) {
+    case 'status':
+      return answer.status !== null && answer.status !== undefined
+    case 'boolean':
+      return typeof answer.booleanValue === 'boolean'
+    case 'rating':
+      return typeof answer.ratingValue === 'number'
+    case 'select':
+      return typeof answer.selectValue === 'string' && answer.selectValue.length > 0
+    case 'text':
+      return typeof answer.textValue === 'string' && answer.textValue.trim().length > 0
+    case 'photo':
+      return typeof answer.photo === 'string' && answer.photo.length > 0
+    default:
+      return false
+  }
 }

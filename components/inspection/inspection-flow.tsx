@@ -9,11 +9,12 @@ import { ModeToggle } from './mode-toggle'
 import schemaData from '@/data/ertiga-2013.json'
 import {
   InspectionAnswers,
+  InspectionAnswer,
   InspectionMode,
   InspectionSchema,
-  InspectionStatus,
   getQuestions,
   getStepsByMode,
+  isQuestionAnswered,
 } from '@/lib/inspection-schema'
 import { calculateScore, getScoreStatus } from '@/lib/scoring'
 
@@ -70,15 +71,10 @@ export function InspectionFlow({ initialMode, onExit }: InspectionFlowProps) {
     setCurrentStepIndex(0)
   }, [])
 
-  const handleItemUpdate = useCallback((
-    itemId: string,
-    status: InspectionStatus,
-    notes?: string,
-    photo?: string
-  ) => {
+  const handleItemUpdate = useCallback((itemId: string, patch: Partial<InspectionAnswer>) => {
     setAnswers((prev) => ({
       ...prev,
-      [itemId]: { status, notes, photo },
+      [itemId]: { ...prev[itemId], ...patch },
     }))
   }, [])
 
@@ -110,7 +106,7 @@ export function InspectionFlow({ initialMode, onExit }: InspectionFlowProps) {
 
   const currentQuestions = currentStep ? getQuestions(currentStep) : []
   const canProceed =
-    currentQuestions.length === 0 || currentQuestions.some((question) => answers[question.id]?.status !== null && answers[question.id]?.status !== undefined)
+    currentQuestions.length === 0 || currentQuestions.some((question) => isQuestionAnswered(question, answers[question.id]))
 
   if (isFinalReport) {
     return <FinalReport schema={schema} steps={steps} answers={answers} onRestart={handleRestart} />

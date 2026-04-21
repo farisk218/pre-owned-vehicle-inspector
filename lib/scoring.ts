@@ -14,16 +14,38 @@ export function calculateScore(steps: InspectionStep[], answers: InspectionAnswe
     if (step.id === 'final') continue
 
     for (const question of getQuestions(step)) {
-      const answer = answers[question.id]?.status
-      if (answer === null || answer === undefined) continue
+      const answer = answers[question.id]
+      if (!answer) continue
 
-      const value = answer === 'pass' ? 1 : answer === 'warning' ? 0.5 : 0
+      let value: number | null = null
+      if (question.type === 'status') {
+        const status = answer.status
+        if (status === null || status === undefined) continue
+        value = status === 'pass' ? 1 : status === 'warning' ? 0.5 : 0
+
+        if (question.critical && status === 'fail') {
+          hasCriticalFail = true
+        }
+      } else if (question.type === 'boolean') {
+        if (typeof answer.booleanValue !== 'boolean') continue
+        value = answer.booleanValue ? 1 : 0
+      } else if (question.type === 'rating') {
+        const rating = answer.ratingValue
+        if (typeof rating !== 'number') continue
+        const min = question.minRating ?? 1
+        const max = question.maxRating ?? 5
+        value = (rating - min) / (max - min || 1)
+      } else if (question.type === 'select') {
+        const selected = answer.selectValue
+        if (!selected) continue
+        const option = question.options?.find((opt) => opt.value === selected)
+        value = option?.score ?? 0.5
+      } else {
+        continue
+      }
+
       total += value * question.weight
       max += question.weight
-
-      if (question.critical && answer === 'fail') {
-        hasCriticalFail = true
-      }
     }
   }
 
