@@ -107,18 +107,27 @@ export function InspectionFlow({ initialMode, schema, onExit }: InspectionFlowPr
     }
   }, [currentStepIndex, onExit])
 
-  const handleRestart = useCallback(() => {
+  const handleCompleteAndExit = useCallback(() => {
     setAnswers({})
     setCurrentStepIndex(0)
     localStorage.removeItem('inspection-state-v1')
-  }, [])
+    onExit()
+  }, [onExit])
 
   const currentQuestions = currentStep ? getQuestions(currentStep) : []
   const canProceed =
     currentQuestions.length === 0 || currentQuestions.some((question) => isQuestionAnswered(question, answers[question.id]))
 
   if (isFinalReport) {
-    return <FinalReport schema={schema} steps={steps} answers={answers} onRestart={handleRestart} />
+    return (
+      <FinalReport
+        schema={schema}
+        steps={steps}
+        answers={answers}
+        onRestart={handleCompleteAndExit}
+        onExported={handleCompleteAndExit}
+      />
+    )
   }
 
   if (!currentStep) return null
