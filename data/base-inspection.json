@@ -41,6 +41,50 @@
               "type": "status",
               "weight": 5,
               "critical": false
+            },
+            {
+              "id": "registration_number",
+              "label": "Registration number recorded",
+              "helperText": "Record exactly as printed on RC and number plate.",
+              "type": "text",
+              "weight": 1,
+              "critical": false
+            },
+            {
+              "id": "owner_count",
+              "label": "Owner count on RC",
+              "helperText": "Higher ownership count may affect resale confidence.",
+              "type": "select",
+              "options": [
+                { "label": "1 owner", "value": "1", "score": 1 },
+                { "label": "2 owners", "value": "2", "score": 0.7 },
+                { "label": "3 owners", "value": "3", "score": 0.4 },
+                { "label": "4+ owners", "value": "4plus", "score": 0.2 }
+              ],
+              "weight": 2,
+              "critical": false
+            },
+            {
+              "id": "usage_type",
+              "label": "Typical previous usage",
+              "helperText": "Commercial/taxi usage can increase wear on drivetrain.",
+              "type": "select",
+              "options": [
+                { "label": "Private/family", "value": "private", "score": 1 },
+                { "label": "Company car", "value": "company", "score": 0.7 },
+                { "label": "Taxi/commercial", "value": "commercial", "score": 0.2 },
+                { "label": "Unknown", "value": "unknown", "score": 0.4 }
+              ],
+              "weight": 2,
+              "critical": false
+            },
+            {
+              "id": "vin_plate_photo",
+              "label": "Capture VIN/chassis plate photo",
+              "helperText": "Take a readable photo for record and verification.",
+              "type": "photo",
+              "weight": 1,
+              "critical": false
             }
           ]
         }
@@ -81,6 +125,20 @@
               "type": "status",
               "weight": 5,
               "critical": false
+            },
+            {
+              "id": "glass_condition",
+              "label": "Windshield and window glass condition",
+              "helperText": "Look for chips, long cracks, and visibility distortion.",
+              "type": "select",
+              "options": [
+                { "label": "Clear, no damage", "value": "clear", "score": 1 },
+                { "label": "Minor chips/scratches", "value": "minor", "score": 0.6 },
+                { "label": "Crack or major damage", "value": "major", "score": 0.1 }
+              ],
+              "weight": 4,
+              "critical": true,
+              "cost": { "minor": 1200, "medium": 3500, "severe": 7000 }
             }
           ]
         },
@@ -119,6 +177,14 @@
               "weight": 4,
               "critical": false,
               "cost": 500
+            },
+            {
+              "id": "exterior_walkaround_photo",
+              "label": "Capture full exterior photo set",
+              "helperText": "At least one clear photo each: front, rear, left, right.",
+              "type": "photo",
+              "weight": 1,
+              "critical": false
             }
           ]
         }
@@ -145,6 +211,19 @@
               "critical": false
             },
             {
+              "id": "cabin_smell",
+              "label": "Cabin smell check",
+              "helperText": "Damp/mould smell may indicate leakage or flood history.",
+              "type": "select",
+              "options": [
+                { "label": "Normal/neutral", "value": "normal", "score": 1 },
+                { "label": "Strong perfume cover-up", "value": "perfume", "score": 0.5 },
+                { "label": "Damp/mouldy/fuel smell", "value": "damp", "score": 0.1 }
+              ],
+              "weight": 4,
+              "critical": false
+            },
+            {
               "id": "ac_performance",
               "label": "AC cooling performance",
               "helperText": "Observe cooling speed and vent consistency.",
@@ -165,6 +244,15 @@
               "type": "status",
               "weight": 8,
               "critical": true
+            },
+            {
+              "id": "electrical_controls_working",
+              "label": "Windows, central lock, mirrors and horn working",
+              "helperText": "Check each electrical control once before road test.",
+              "type": "boolean",
+              "weight": 5,
+              "critical": false,
+              "cost": { "minor": 600, "medium": 1500, "severe": 3000 }
             }
           ]
         }
@@ -189,6 +277,19 @@
               "critical": true
             },
             {
+              "id": "cold_start_quality",
+              "label": "Cold start quality",
+              "helperText": "Long cranking or rough start can indicate injector/glow issues.",
+              "type": "select",
+              "options": [
+                { "label": "Starts quickly, smooth idle", "value": "good", "score": 1 },
+                { "label": "Starts with slight shake/smoke", "value": "mild", "score": 0.5 },
+                { "label": "Hard to start/long crank", "value": "poor", "score": 0.1 }
+              ],
+              "weight": 6,
+              "critical": true
+            },
+            {
               "id": "clutch_wear",
               "label": "Clutch engagement is healthy",
               "helperText": "Check bite point, slip under acceleration, and pedal effort.",
@@ -205,6 +306,15 @@
               "weight": 7,
               "critical": true,
               "cost": { "minor": 1200, "medium": 3000, "severe": 5000 }
+            },
+            {
+              "id": "steering_vibration_60_80",
+              "label": "No steering vibration at 60-80 km/h",
+              "helperText": "Vibration at this range may indicate balancing, alignment, or hub issues.",
+              "type": "boolean",
+              "weight": 5,
+              "critical": false,
+              "cost": { "minor": 500, "medium": 1500, "severe": 3500 }
             },
             {
               "id": "drive_notes",
@@ -254,6 +364,33 @@
               "type": "photo",
               "weight": 1,
               "critical": false
+            },
+            {
+              "id": "battery_health",
+              "label": "Battery health and age",
+              "helperText": "Old/weak battery can hide start issues and add immediate cost.",
+              "type": "select",
+              "options": [
+                { "label": "<3 years and strong", "value": "good", "score": 1 },
+                { "label": "3-5 years or weak", "value": "aging", "score": 0.5 },
+                { "label": ">5 years/needs replacement", "value": "replace", "score": 0.1 }
+              ],
+              "weight": 4,
+              "critical": false,
+              "cost": { "minor": 3000, "medium": 5000, "severe": 7000 }
+            },
+            {
+              "id": "dtc_present",
+              "label": "OBD/ECU diagnostic trouble codes",
+              "helperText": "Scan with OBD tool if available.",
+              "type": "select",
+              "options": [
+                { "label": "No active codes", "value": "none", "score": 1 },
+                { "label": "Minor intermittent codes", "value": "minor", "score": 0.5 },
+                { "label": "Serious powertrain/ABS/airbag codes", "value": "serious", "score": 0.1 }
+              ],
+              "weight": 7,
+              "critical": true
             }
           ]
         }

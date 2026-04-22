@@ -5,6 +5,8 @@ const RULE_COST_ADJUSTMENTS: Record<string, number> = {
   critical_rust_detected: 1500,
   turbo_issue_detected: 1000,
   injector_egr_attention: 800,
+  serious_dtc_detected: 2500,
+  commercial_usage_risk: 1200,
 }
 
 type SeverityTier = 'minor' | 'medium' | 'severe'

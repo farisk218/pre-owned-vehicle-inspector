@@ -60,6 +60,20 @@ const RULES: Rule[] = [
     condition: (ctx) => ctx.answers.egr_injector_behavior?.status === 'fail',
   },
   {
+    id: 'serious_dtc_detected',
+    appliesTo: {},
+    severity: 'critical',
+    message: 'Serious ECU/ABS/airbag fault codes detected. Budget diagnosis before purchase.',
+    condition: (ctx) => ctx.answers.dtc_present?.selectValue === 'serious',
+  },
+  {
+    id: 'commercial_usage_risk',
+    appliesTo: {},
+    severity: 'warning',
+    message: 'Vehicle marked as commercial/taxi use. Inspect wear items and documents carefully.',
+    condition: (ctx) => ctx.answers.usage_type?.selectValue === 'commercial',
+  },
+  {
     id: 'overall_high_risk',
     appliesTo: {},
     severity: 'critical',
