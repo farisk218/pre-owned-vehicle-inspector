@@ -76,9 +76,23 @@ export function InspectionFlow({ initialMode, schema, onExit }: InspectionFlowPr
   }, [currentStepIndex])
 
   const handleModeChange = useCallback((newMode: InspectionMode) => {
+    if (newMode === mode) return
+
+    const currentStepId = steps[currentStepIndex]?.id
+    const nextSteps = getStepsByMode(schema, newMode)
+
+    // Keep user on same step when possible; otherwise use nearest valid step.
+    const sameStepIndex = currentStepId
+      ? nextSteps.findIndex((step) => step.id === currentStepId)
+      : -1
+
     setMode(newMode)
-    setCurrentStepIndex(0)
-  }, [])
+    if (sameStepIndex >= 0) {
+      setCurrentStepIndex(sameStepIndex)
+    } else {
+      setCurrentStepIndex(Math.min(currentStepIndex, Math.max(0, nextSteps.length - 1)))
+    }
+  }, [mode, steps, currentStepIndex, schema])
 
   const handleItemUpdate = useCallback((itemId: string, patch: Partial<InspectionAnswer>) => {
     setAnswers((prev) => ({
