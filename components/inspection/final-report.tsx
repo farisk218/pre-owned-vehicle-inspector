@@ -58,6 +58,11 @@ export function FinalReport({ schema, steps, answers, onRestart, onExported }: F
       .filter((q) => answers[q.id]?.status === 'pass')
       .map((q) => ({ step: s.label, question: q }))
   )
+  const photoEvidence = inspectionSteps.flatMap((s) =>
+    getQuestions(s)
+      .filter((q) => Boolean(answers[q.id]?.photo))
+      .map((q) => ({ step: s.label, question: q, photo: answers[q.id]?.photo as string }))
+  )
 
   // Calculate circle properties
   const radius = 70
@@ -107,6 +112,31 @@ export function FinalReport({ schema, steps, answers, onRestart, onExported }: F
       doc.setDrawColor(226, 232, 240)
       doc.line(margin, y, pageWidth - margin, y)
       y += 4
+    }
+
+    const getImageFormat = (dataUrl: string): 'JPEG' | 'PNG' | 'WEBP' => {
+      const match = dataUrl.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,/)
+      const mimeSubtype = match?.[1]?.toLowerCase() || ''
+      if (mimeSubtype.includes('png')) return 'PNG'
+      if (mimeSubtype.includes('webp')) return 'WEBP'
+      return 'JPEG'
+    }
+
+    const addEvidenceImage = (photo: string) => {
+      ensureSpace(48)
+      const format = getImageFormat(photo)
+      try {
+        doc.addImage(photo, format, margin, y, 58, 40)
+        y += 42
+      } catch {
+        // Retry with JPEG fallback for malformed mime headers.
+        try {
+          doc.addImage(photo, 'JPEG', margin, y, 58, 40)
+          y += 42
+        } catch {
+          addLine('Photo attached (preview unavailable in PDF export).', 9, 5, [100, 116, 139])
+        }
+      }
     }
 
     const drawStatCard = (
@@ -186,13 +216,7 @@ export function FinalReport({ schema, steps, answers, onRestart, onExported }: F
         if (notes) addLine(`Notes: ${notes}`, 10, 5, [71, 85, 105])
         const photo = answers[question.id]?.photo
         if (photo) {
-          ensureSpace(48)
-          try {
-            doc.addImage(photo, 'JPEG', margin, y, 58, 40)
-            y += 42
-          } catch {
-            addLine('Photo attached (preview unavailable in PDF export).', 9, 5, [100, 116, 139])
-          }
+          addEvidenceImage(photo)
         }
         y += 2
       })
@@ -204,6 +228,16 @@ export function FinalReport({ schema, steps, answers, onRestart, onExported }: F
     } else {
       minorIssues.forEach(({ step, question }, index) => {
         addLine(`${index + 1}. ${question.label} (${step})`, 11, 6, [120, 53, 15])
+      })
+    }
+
+    drawSectionTitle(`Photo Evidence (${photoEvidence.length})`, 'primary')
+    if (photoEvidence.length === 0) {
+      addLine('No photos attached.', 11, 6, [71, 85, 105])
+    } else {
+      photoEvidence.forEach(({ step, question, photo }, index) => {
+        addLine(`${index + 1}. ${question.label} (${step})`, 10, 5, [51, 65, 85])
+        addEvidenceImage(photo)
       })
     }
 
