@@ -38,6 +38,10 @@ export interface VehicleSelection {
   year: number
 }
 
+export interface GenericSelection {
+  year: number
+}
+
 export interface VehicleOption {
   id: string
   label: string
@@ -141,5 +145,18 @@ export function buildInspectionSchema(selection: VehicleSelection): InspectionSc
   return {
     car: override.car,
     steps: mergedSteps,
+  }
+}
+
+export function buildGenericInspectionSchema(selection: GenericSelection): InspectionSchema {
+  const base = baseInspectionData as { steps: InspectionStep[] }
+  return {
+    car: {
+      make: 'Generic',
+      model: 'Used Vehicle',
+      year: selection.year,
+      engine: 'Unknown',
+    },
+    steps: cloneSteps(base.steps),
   }
 }
