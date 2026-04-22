@@ -139,6 +139,45 @@ export function FinalReport({ schema, steps, answers, onRestart, onExported }: F
       }
     }
 
+    const addPhotoEvidenceGrid = (
+      photos: Array<{ step: string; question: { label: string }; photo: string }>
+    ) => {
+      const gutter = 6
+      const colWidth = (contentWidth - gutter) / 2
+      const imageHeight = 30
+      const itemHeight = imageHeight + 10
+
+      for (let i = 0; i < photos.length; i += 2) {
+        ensureSpace(itemHeight + 4)
+        const rowItems = photos.slice(i, i + 2)
+
+        rowItems.forEach((item, colIndex) => {
+          const x = margin + colIndex * (colWidth + gutter)
+          const format = getImageFormat(item.photo)
+
+          try {
+            doc.setDrawColor(226, 232, 240)
+            doc.roundedRect(x, y, colWidth, itemHeight, 2, 2, 'S')
+            doc.addImage(item.photo, format, x + 2, y + 2, colWidth - 4, imageHeight - 2)
+          } catch {
+            doc.setFont('helvetica', 'normal')
+            doc.setFontSize(8)
+            doc.setTextColor(100, 116, 139)
+            doc.text('Preview unavailable', x + 4, y + 10)
+          }
+
+          doc.setFont('helvetica', 'normal')
+          doc.setFontSize(8)
+          doc.setTextColor(51, 65, 85)
+          const caption = `${item.question.label} (${item.step})`
+          const lines = doc.splitTextToSize(caption, colWidth - 4)
+          doc.text(lines.slice(0, 2), x + 2, y + imageHeight + 5)
+        })
+
+        y += itemHeight + 4
+      }
+    }
+
     const drawStatCard = (
       x: number,
       title: string,
@@ -235,10 +274,7 @@ export function FinalReport({ schema, steps, answers, onRestart, onExported }: F
     if (photoEvidence.length === 0) {
       addLine('No photos attached.', 11, 6, [71, 85, 105])
     } else {
-      photoEvidence.forEach(({ step, question, photo }, index) => {
-        addLine(`${index + 1}. ${question.label} (${step})`, 10, 5, [51, 65, 85])
-        addEvidenceImage(photo)
-      })
+      addPhotoEvidenceGrid(photoEvidence)
     }
 
     drawSectionTitle(`Intelligent Insights (${triggeredRules.length})`, 'primary')
