@@ -18,14 +18,14 @@
     {
       "id": "innova",
       "make": "Toyota",
-      "model": "Innova",
+      "model": "Innova Crysta",
       "generations": [
         {
-          "id": "gen2",
-          "yearRange": [2016, 2021],
-          "enabled": false,
+          "id": "crysta-gen",
+          "yearRange": [2016, 2022],
+          "enabled": true,
           "schema": "innova-2018.json",
-          "variants": ["GX", "VX"],
+          "variants": ["GX", "VX", "ZX"],
           "fuelTypes": ["diesel", "petrol"]
         }
       ]

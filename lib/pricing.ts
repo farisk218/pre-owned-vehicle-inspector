@@ -7,6 +7,10 @@ const RULE_COST_ADJUSTMENTS: Record<string, number> = {
   injector_egr_attention: 800,
   serious_dtc_detected: 2500,
   commercial_usage_risk: 1200,
+  crysta_brake_judder_risk: 4000,
+  crysta_dpf_risk: 3500,
+  crysta_dpf_limp_mode: 9000,
+  crysta_driveline_clunk: 2500,
 }
 
 type SeverityTier = 'minor' | 'medium' | 'severe'

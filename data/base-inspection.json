@@ -127,6 +127,22 @@
               "critical": false
             },
             {
+              "id": "apron_structural_check",
+              "label": "Front aprons and strut towers",
+              "helperText": "Check for accidental repair signs: uneven welds, ripples, or messy sealant.",
+              "type": "status",
+              "weight": 10,
+              "critical": true
+            },
+            {
+              "id": "paint_overspray_check",
+              "label": "Paint overspray and texture check",
+              "helperText": "Check rubber beadings and panel edges for rough paint or color mismatch.",
+              "type": "status",
+              "weight": 5,
+              "critical": false
+            },
+            {
               "id": "glass_condition",
               "label": "Windshield and window glass condition",
               "helperText": "Look for chips, long cracks, and visibility distortion.",
@@ -364,6 +380,19 @@
               "type": "photo",
               "weight": 1,
               "critical": false
+            },
+            {
+              "id": "engine_blowby_check",
+              "label": "Engine blow-by / oil cap test",
+              "helperText": "Loosen oil cap while idling. Significant smoke or cap jumping indicates engine wear.",
+              "type": "select",
+              "options": [
+                { "label": "No smoke / normal", "value": "healthy", "score": 1 },
+                { "label": "Mild vapor", "value": "worn", "score": 0.6 },
+                { "label": "Heavy smoke / cap dancing", "value": "critical", "score": 0 }
+              ],
+              "weight": 9,
+              "critical": true
             },
             {
               "id": "battery_health",

@@ -80,6 +80,34 @@ const RULES: Rule[] = [
     message: 'Inspection includes critical failure; vehicle is high risk without major negotiation.',
     condition: (ctx) => Boolean(ctx.derived.hasCriticalFail),
   },
+  {
+    id: 'crysta_brake_judder_risk',
+    appliesTo: { model: 'Innova Crysta', yearRange: [2016, 2022] },
+    severity: 'critical',
+    message: 'Brake judder or steering shake detected at speed. Prioritize rotor/suspension inspection.',
+    condition: (ctx) => ctx.answers.brake_performance?.status === 'fail',
+  },
+  {
+    id: 'crysta_dpf_risk',
+    appliesTo: { model: 'Innova Crysta', yearRange: [2016, 2022] },
+    severity: 'warning',
+    message: 'DPF/AdBlue warning observed. Plan regen diagnostics before final purchase.',
+    condition: (ctx) => ctx.answers.dpf_status_check?.selectValue === 'warning',
+  },
+  {
+    id: 'crysta_dpf_limp_mode',
+    appliesTo: { model: 'Innova Crysta', yearRange: [2016, 2022] },
+    severity: 'critical',
+    message: 'DPF limp mode risk detected. Expect immediate service and negotiation leverage.',
+    condition: (ctx) => ctx.answers.dpf_status_check?.selectValue === 'limp',
+  },
+  {
+    id: 'crysta_driveline_clunk',
+    appliesTo: { model: 'Innova Crysta', yearRange: [2016, 2022] },
+    severity: 'warning',
+    message: 'Driveline clunk noted. Check propeller shaft/U-joints and mount condition.',
+    condition: (ctx) => ctx.answers.propeller_shaft_greasing?.status === 'fail',
+  },
 ]
 
 function matchesAppliesTo(rule: Rule, context: RuleContext): boolean {

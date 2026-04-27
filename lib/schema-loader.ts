@@ -1,6 +1,7 @@
 import baseInspectionData from '@/data/base-inspection.json'
 import carsData from '@/data/cars.json'
 import ertigaOverrideData from '@/data/ertiga-2013.json'
+import innovaOverrideData from '@/data/innova-2018.json'
 import { InspectionQuestion, InspectionSchema, InspectionStep } from '@/lib/inspection-schema'
 
 interface VehicleGeneration {
@@ -62,6 +63,7 @@ export interface ModelOption {
 
 const overrideMap: Record<string, VehicleOverride> = {
   'ertiga-2013.json': ertigaOverrideData as VehicleOverride,
+  'innova-2018.json': innovaOverrideData as VehicleOverride,
 }
 
 function cloneSteps(steps: InspectionStep[]): InspectionStep[] {

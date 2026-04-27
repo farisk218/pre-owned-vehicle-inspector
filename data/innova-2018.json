@@ -1,0 +1,144 @@
+{
+  "car": {
+    "make": "Toyota",
+    "model": "Innova Crysta",
+    "year": 2018,
+    "engine": "2.4L / 2.8L GD Diesel"
+  },
+  "overrides": {
+    "brake_performance": {
+      "label": "No brake judder/steering shake at high speed",
+      "helperText": "Test firm braking from ~100 km/h; steering vibration can indicate warped rotors.",
+      "weight": 10,
+      "critical": true,
+      "cost": { "minor": 4500, "medium": 8500, "severe": 12000 }
+    },
+    "clutch_wear": {
+      "label": "Clutch pedal effort and travel are healthy",
+      "helperText": "Crysta clutch is naturally heavier, but rock-hard pedal can signal replacement due.",
+      "weight": 7,
+      "cost": { "minor": 12000, "medium": 18000, "severe": 25000 }
+    },
+    "steering_vibration_60_80": {
+      "label": "Steering kickback and resonance check",
+      "helperText": "Check for steering dance on rough roads and drone around 1800 RPM.",
+      "weight": 6
+    },
+    "rust": {
+      "label": "No rust near underbody crossmembers and rear floor",
+      "helperText": "Inspect underbody and rear floor seams, especially for coastal vehicles.",
+      "weight": 6,
+      "critical": false
+    }
+  },
+  "additions": [
+    {
+      "stepId": "test-drive",
+      "sectionId": "driving",
+      "question": {
+        "id": "gear_lever_vibration",
+        "label": "Gear lever vibration is within acceptable limit",
+        "helperText": "Some vibration is normal on MT, excessive dancing indicates mount wear.",
+        "type": "status",
+        "weight": 5,
+        "critical": false,
+        "cost": { "minor": 1500, "medium": 4000, "severe": 9000 }
+      }
+    },
+    {
+      "stepId": "engine",
+      "sectionId": "engine-general",
+      "question": {
+        "id": "dpf_status_check",
+        "label": "DPF/AdBlue warning status (2021+ focus)",
+        "helperText": "Check MID for DPF bars or warning. Persistent warning can need forced regen/service.",
+        "type": "select",
+        "options": [
+          { "label": "Clean/no warning", "value": "clean", "score": 1 },
+          { "label": "DPF warning or bars high", "value": "warning", "score": 0.4 },
+          { "label": "Limp mode or severe warning", "value": "limp", "score": 0 }
+        ],
+        "weight": 9,
+        "critical": true,
+        "cost": { "minor": 3000, "medium": 12000, "severe": 30000 }
+      }
+    },
+    {
+      "stepId": "exterior",
+      "sectionId": "body",
+      "question": {
+        "id": "mudguard_condition",
+        "label": "Mudguards and clips are intact",
+        "helperText": "Cracked or missing mudguards are common after rough-road compression.",
+        "type": "status",
+        "weight": 2,
+        "critical": false,
+        "cost": 1500
+      }
+    },
+    {
+      "stepId": "exterior",
+      "sectionId": "wheels-lights",
+      "question": {
+        "id": "alloy_rim_damage",
+        "label": "No bends on alloy rims (especially 17-inch trims)",
+        "helperText": "Inspect inner barrel for bends/cracks from pothole impact.",
+        "type": "status",
+        "weight": 7,
+        "critical": false,
+        "cost": { "minor": 5000, "medium": 15000, "severe": 40000 }
+      }
+    },
+    {
+      "stepId": "interior",
+      "sectionId": "cabin",
+      "question": {
+        "id": "ac_water_leak_check",
+        "label": "Passenger footwell is dry (AC drain check)",
+        "helperText": "Touch carpet under passenger mat for dampness from clogged AC drain.",
+        "type": "boolean",
+        "weight": 5,
+        "critical": false,
+        "cost": 1200
+      }
+    },
+    {
+      "stepId": "interior",
+      "sectionId": "cabin",
+      "question": {
+        "id": "dashboard_rattle_trim",
+        "label": "Dashboard/trim is rattle-free",
+        "helperText": "Early batches may show trim rattle near glovebox and center stack.",
+        "type": "status",
+        "weight": 3,
+        "critical": false,
+        "cost": { "minor": 1500, "medium": 3500, "severe": 7000 }
+      }
+    },
+    {
+      "stepId": "engine",
+      "sectionId": "engine-general",
+      "question": {
+        "id": "propeller_shaft_greasing",
+        "label": "No driveline clunk on take-off/gear change",
+        "helperText": "Rear thud can indicate propeller shaft greasing need or U-joint wear.",
+        "type": "status",
+        "weight": 6,
+        "critical": false,
+        "cost": { "minor": 2000, "medium": 8000, "severe": 15000 }
+      }
+    },
+    {
+      "stepId": "basic-info",
+      "sectionId": "docs",
+      "question": {
+        "id": "spare_wheel_lock_check",
+        "label": "Spare wheel and lock mechanism verified",
+        "helperText": "Confirm spare wheel presence underbody and lock operation.",
+        "type": "boolean",
+        "weight": 3,
+        "critical": false
+      }
+    }
+  ]
+}
